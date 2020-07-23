@@ -31,38 +31,40 @@ class MemoryGame {
 		for (let color of colorArray) {
 			const newDiv = document.createElement('div');
 			newDiv.classList.add(color);
-			newDiv.addEventListener('click', this.handleCardClick);
+			newDiv.addEventListener('click', this.handleCardClick.bind(this));
+
 			gameContainer.append(newDiv);
 		}
 	}
 	handleCardClick(e) {
 		const { card1, card2, cardsFlipped, noClicking, colors } = this;
-		if (noClicking) return; // not clicked, return the card as is
+		if (this.noClicking) return; // not clicked, return the card as is
 		if (e.target.classList.contains('flipped')) return;
 
 		let currentCard = e.target; // assigns current card
+
 		currentCard.style.backgroundColor = currentCard.classList[0]; // changes background of current card
 
 		if (!card1 || !card2) {
 			currentCard.classList.add('flipped'); // adds class "flipped" which will be removed later.
-			this.card1 = card1 || currentCard;
+			this.card1 = this.card1 || currentCard;
 			this.card2 = currentCard === card1 ? null : currentCard;
 		}
 
 		if (card1 && card2) {
-			noClicking = true;
+			this.noClicking = true;
 
 			let color1 = card1.className; //assigns your clicked card to a variable
 			let color2 = card2.className; //assigns your clicked card to a variable
 
 			if (color1 === color2) {
 				// compares the variables and if = sets cards to stay with their colors showing
-				cardsFlipped += 2;
-				card1.removeEventListener('click', handleCardClick);
-				card2.removeEventListener('click', handleCardClick);
-				card1 = null;
-				card2 = null;
-				noClicking = false;
+				this.cardsFlipped += 2;
+				card1.removeEventListener('click', this.handleCardClick);
+				card2.removeEventListener('click', this.handleCardClick);
+				this.card1 = null;
+				this.card2 = null;
+				this.noClicking = false;
 			} else {
 				// sets cards to have no color showing to be clicked again
 				setTimeout(function() {
